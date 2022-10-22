@@ -3,7 +3,7 @@ import React from 'react';
 import {SafeAreaView, useColorScheme} from 'react-native';
 
 import {Colors} from 'react-native/Libraries/NewAppScreen';
-import HooksHOC from './src/containers/hooksHOC';
+import Counter from './src/containers/counter/Counter';
 
 const App = () => {
   const isDarkMode = useColorScheme() === 'dark';
@@ -16,7 +16,7 @@ const App = () => {
     <NativeBaseProvider>
       <SafeAreaView style={backgroundStyle}>
         <Center height={'100%'}>
-          <HooksHOC />
+          <Counter />
         </Center>
       </SafeAreaView>
     </NativeBaseProvider>

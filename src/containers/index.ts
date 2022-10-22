@@ -1,1 +1,1 @@
-export * from './hooksHOC';
+export * from './counter';
