@@ -19,6 +19,7 @@
     "react-native": "0.69.4",
     "react-native-safe-area-context": "3.3.2",
     "react-native-svg": "12.1.1",
+    "react-native-tcp-socket": "^6.0.2",
     "react-redux": "^8.0.2",
     "redux": "^4.2.0",
     "styled-components": "^5.3.5"
@@ -40,6 +41,9 @@
     "metro-react-native-babel-preset": "^0.70.3",
     "react-test-renderer": "18.0.0",
     "typescript": "^4.4.4"
+  },
+  "react-native": {
+    "net": "react-native-tcp-socket"
   },
   "jest": {
     "preset": "react-native",
