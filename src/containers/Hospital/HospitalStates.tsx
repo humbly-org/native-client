@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 
-export const counterHOC = (Component: any): any => {
+export const hospitalHOC = (Component: any) => {
   return (props: any) => {
     const [state, setState] = useState(0);
     const componentProps = {

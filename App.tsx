@@ -1,9 +1,10 @@
-import {Center, NativeBaseProvider} from 'native-base';
+import {Center, NativeBaseProvider, View} from 'native-base';
 import React from 'react';
 import {SafeAreaView, useColorScheme} from 'react-native';
 
 import {Colors} from 'react-native/Libraries/NewAppScreen';
-import Counter from './src/containers/counter/Counter';
+import Header from './src/containers/Header/Header';
+import Hospital from './src/containers/Hospital/Hospital';
 
 const App = () => {
   const isDarkMode = useColorScheme() === 'dark';
@@ -15,8 +16,9 @@ const App = () => {
   return (
     <NativeBaseProvider>
       <SafeAreaView style={backgroundStyle}>
+        <Header />
         <Center height={'100%'}>
-          <Counter />
+          <Hospital />
         </Center>
       </SafeAreaView>
     </NativeBaseProvider>
