@@ -1,11 +1,13 @@
 import {Modal, Button, Center, FormControl, Input} from 'native-base';
-import {StyleSheet} from 'react-native';
 import React from 'react';
 import {inject, observer} from 'mobx-react';
+import {SocketStore} from '../../stores/SocketStore';
+import TcpSocket from 'react-native-tcp-socket';
 
 interface IProps {
   setModalVisible: (modal: boolean) => void;
   modal: boolean;
+  store: SocketStore;
 }
 
 interface IState {
@@ -28,7 +30,6 @@ export class QueueEnter extends React.Component<IProps, IState> {
   }
 
   handleNameChange = (e: any) => {
-    console.warn(this.state.name);
     this.setState({
       name: e.nativeEvent.text,
     });
@@ -40,13 +41,18 @@ export class QueueEnter extends React.Component<IProps, IState> {
     });
   };
 
-  sendMessage() {
+  async sendMessage() {
+    ``;
     const patientObject = {
       name: this.state.name,
       cpf: this.state.cpf,
     };
-    console.warn(patientObject);
-    this.props.setModalVisible(!this.props.modal)
+    console.log('AFTER:', this.props.store.socket);
+
+    await this.props.store.connect().then(() => {
+      console.warn('ended');
+      this.props.store.sendMessage('message');
+    });
   }
 
   render() {
@@ -91,47 +97,3 @@ export class QueueEnter extends React.Component<IProps, IState> {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  centeredView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 22,
-  },
-  modalView: {
-    margin: 20,
-    backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 35,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  button: {
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
-  },
-  buttonOpen: {
-    backgroundColor: '#F194FF',
-  },
-  buttonClose: {
-    backgroundColor: '#2196F3',
-  },
-  textStyle: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  modalText: {
-    marginBottom: 15,
-    textAlign: 'center',
-  },
-});
