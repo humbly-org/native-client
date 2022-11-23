@@ -1,7 +1,6 @@
-import {Input, Row, Text, View} from 'native-base';
+import {Modal, Button, Center, FormControl, Input} from 'native-base';
 import {StyleSheet} from 'react-native';
 import React from 'react';
-import {Button} from '../Button';
 import {inject, observer} from 'mobx-react';
 
 interface IProps {
@@ -47,30 +46,48 @@ export class QueueEnter extends React.Component<IProps, IState> {
       cpf: this.state.cpf,
     };
     console.warn(patientObject);
+    this.props.setModalVisible(!this.props.modal)
   }
 
   render() {
     return (
-      <View style={styles.centeredView}>
-        <View style={styles.modalView}>
-          <Text style={styles.modalText}>Hello World!</Text>
-          <Input
-            placeholder="Digite seu nomer:"
-            onChange={e => this.handleNameChange(e)}
-          />
-          <Input
-            placeholder="Digite seu cpf:"
-            onChange={e => this.handleCpfChange(e)}
-          />
-          <Row>
-            <Button
-              onPress={() => this.props.setModalVisible(!this.props.modal)}
-              title={'close'}
-            />
-            <Button onPress={this.sendMessage} title={'console'} />
-          </Row>
-        </View>
-      </View>
+      <Center>
+        <Modal
+          isOpen={this.props.modal}
+          onClose={() => this.props.setModalVisible(!this.props.modal)}>
+          <Modal.Content maxWidth="400px">
+            <Modal.CloseButton />
+            <Modal.Header>Entre na fila</Modal.Header>
+            <Modal.Body>
+              <FormControl>
+                <FormControl.Label>Nome</FormControl.Label>
+                <Input
+                  placeholder="Digite seu nome:"
+                  onChange={e => this.handleNameChange(e)}
+                />
+              </FormControl>
+              <FormControl mt="3">
+                <FormControl.Label>CPF</FormControl.Label>
+                <Input
+                  placeholder="Digite seu cpf:"
+                  onChange={e => this.handleCpfChange(e)}
+                />
+              </FormControl>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button.Group space={2}>
+                <Button
+                  variant="ghost"
+                  colorScheme="blueGray"
+                  onPress={() => this.props.setModalVisible(!this.props.modal)}>
+                  Cancelar
+                </Button>
+                <Button onPress={this.sendMessage}>Entrar</Button>
+              </Button.Group>
+            </Modal.Footer>
+          </Modal.Content>
+        </Modal>
+      </Center>
     );
   }
 }
