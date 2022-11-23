@@ -46,30 +46,11 @@ export class QueueEnter extends React.Component<IProps, IState> {
       cpf: this.state.cpf,
     };
     console.warn(patientObject);
+    this.props.setModalVisible(!this.props.modal)
   }
 
   render() {
     return (
-      // <View style={styles.centeredView}>
-      //   <View style={styles.modalView}>
-      //     <Text style={styles.modalText}>Entre na fila!</Text>
-      //     <Input
-      //       placeholder="Digite seu nomer:"
-      //       onChange={e => this.handleNameChange(e)}
-      //     />
-      //     <Input
-      //       placeholder="Digite seu cpf:"
-      //       onChange={e => this.handleCpfChange(e)}
-      //     />
-      //     <Row>
-      //       <Button
-      //         onPress={() => this.props.setModalVisible(!this.props.modal)}
-      //         title={'close'}
-      //       />
-      //       <Button onPress={this.sendMessage} title={'console'} />
-      //     </Row>
-      //   </View>
-      // </View>
       <Center>
         <Modal
           isOpen={this.props.modal}
