@@ -1,13 +1,13 @@
-import {Modal, Button, Center, FormControl, Input} from 'native-base';
+import {Modal, Button, Center, FormControl, Input, Text} from 'native-base';
 import React from 'react';
+import Toast from 'react-native-toast-message';
 import {inject, observer} from 'mobx-react';
-import {SocketStore} from '../../stores/SocketStore';
-import TcpSocket from 'react-native-tcp-socket';
+import {RootStore} from '../../stores/RootStore';
 
 interface IProps {
   setModalVisible: (modal: boolean) => void;
   modal: boolean;
-  store: SocketStore;
+  store?: RootStore;
 }
 
 interface IState {
@@ -42,53 +42,79 @@ export class QueueEnter extends React.Component<IProps, IState> {
   };
 
   async sendMessage() {
-    ``;
     const patientObject = {
       name: this.state.name,
       cpf: this.state.cpf,
     };
-    console.log('AFTER:', this.props.store.socket);
-
-    await this.props.store.connect().then(() => {
-      console.warn('ended');
-      this.props.store.sendMessage('message');
-    });
+    Promise.resolve(this.props.store?.socketStore.connect())
+      .then(() => {
+        console.log('resolved');
+        this.props.store?.socketStore.enterQueue(patientObject);
+      })
+      .finally(() => {
+        if (this.props.store?.queueStore.getState() === 'onHold') {
+          this.props.setModalVisible(false);
+        }
+      });
   }
 
   render() {
+    const {modal, setModalVisible} = this.props;
+    const {name, cpf} = this.state;
+
     return (
       <Center>
-        <Modal
-          isOpen={this.props.modal}
-          onClose={() => this.props.setModalVisible(!this.props.modal)}>
+        <Modal isOpen={modal} onClose={() => setModalVisible(!modal)}>
           <Modal.Content maxWidth="400px">
             <Modal.CloseButton />
-            <Modal.Header>Entre na fila</Modal.Header>
+            <Modal.Header
+              borderBottomWidth={0}
+              paddingRight={4}
+              borderWidth={0}>
+              <Text bold fontSize="xl" paddingRight={8}>
+                Preencha abaixo para entrar na fila:
+              </Text>
+            </Modal.Header>
             <Modal.Body>
               <FormControl>
-                <FormControl.Label>Nome</FormControl.Label>
+                <Text bold fontSize="xl">
+                  Nome
+                </Text>
                 <Input
-                  placeholder="Digite seu nome:"
+                  fontSize={'xl'}
+                  placeholder="Ex: João da Silva"
                   onChange={e => this.handleNameChange(e)}
                 />
               </FormControl>
               <FormControl mt="3">
-                <FormControl.Label>CPF</FormControl.Label>
+                <Text bold fontSize="xl">
+                  CPF
+                </Text>
                 <Input
-                  placeholder="Digite seu cpf:"
+                  fontSize={'xl'}
+                  placeholder="Ex: 000.000.000-00"
                   onChange={e => this.handleCpfChange(e)}
                 />
               </FormControl>
             </Modal.Body>
-            <Modal.Footer>
+            <Modal.Footer
+              display={'flex'}
+              textAlign={'center'}
+              alignItems="center"
+              justifyContent={'center'}
+              borderTopWidth={0}>
               <Button.Group space={2}>
-                <Button
-                  variant="ghost"
-                  colorScheme="blueGray"
-                  onPress={() => this.props.setModalVisible(!this.props.modal)}>
+                <Button variant="ghost" onPress={() => setModalVisible(!modal)}>
                   Cancelar
                 </Button>
-                <Button onPress={this.sendMessage}>Entrar</Button>
+                <Button
+                  isDisabled={name.length < 4 || cpf.length < 11}
+                  backgroundColor={'#17C964'}
+                  onPress={this.sendMessage}>
+                  <Text color="white" bold>
+                    Entrar
+                  </Text>
+                </Button>
               </Button.Group>
             </Modal.Footer>
           </Modal.Content>

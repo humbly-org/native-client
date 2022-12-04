@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import {Image, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import {CallbackStateFunctionType} from '../../utils';
 import {StyledHeader} from '../../components/Header/Header';
-import {headerHOC} from './HeaderStates';
 
 interface IHooksHOCProps {
   state: number;
@@ -21,7 +20,7 @@ const styles = StyleSheet.create({
   },
 });
 
-class Header extends Component<IHooksHOCProps> {
+class Header extends Component {
   render() {
     return (
       <StyledHeader>
@@ -37,4 +36,4 @@ class Header extends Component<IHooksHOCProps> {
   }
 }
 
-export default headerHOC(Header);
+export default Header;

@@ -1,44 +1,109 @@
 import {action, makeAutoObservable} from 'mobx';
 import TcpSocket from 'react-native-tcp-socket';
+import Toast from 'react-native-toast-message';
 import {parseMessage} from '../utils';
+import {PatientType} from '../../types';
+import {RootStore} from './RootStore';
 
 type SocketType = TcpSocket.Socket | null;
 export class SocketStore {
   socket: SocketType;
+  connected: boolean;
+  connectedCpf: string;
+  rootStore;
 
-  constructor() {
+  constructor(rootStore: RootStore) {
+    this.rootStore = rootStore;
     this.socket = null as SocketType;
+    this.connectedCpf = '';
+    this.connected = false;
     this.connect.bind(this);
     makeAutoObservable(this);
-    if (this.socket?.on) {
-      this.socket.on('data', data => {
-        console.warn('FROM SERVER:', parseMessage(data));
-      });
-    }
   }
 
   @action
   async connect() {
-    return new Promise((resolve, _rej) => {
-      this.socket = TcpSocket.createConnection(
-        {host: 'localhost', port: 3322},
-        () => {
-          console.warn('Connected');
+    return new Promise((resolve, rejected) => {
+      console.log('then');
+      console.log('callback');
+      this.socket =
+        TcpSocket.connect({host: 'localhost', port: 3322}, () => {
+          console.log('connected executed');
           resolve('Connected');
-        },
-      );
-    });
+          this.connected = true;
+        }) ?? null;
+      console.log('callback2');
+      console.log(this.socket);
+      if (!this.socket) rejected('Error');
+    })
+      .then(connMess => {
+        if (this.socket && this.connected) {
+          this.socket.on('data', data => {
+            if (parseMessage(data)) {
+              const {message, body} = parseMessage(data);
+              this.rootStore.queueStore.queueMapper(message, body);
+            }
+          });
+          this.connected = true;
+        } else
+          connMess === 'Error' &&
+            Toast.show({
+              position: 'bottom',
+              type: 'error',
+              text1: 'Impossível de conectar!',
+              text2: 'Provavelmente o servidor não está ativo.',
+            });
+      })
+      .finally(() => {});
   }
 
   @action
   sendMessage = (message: string) => {
-    console.warn('MESSAGE:', this.socket?.write);
     if (this.socket?.write) {
       this.socket.write(JSON.stringify({message: message}), 'utf8', e => {
         if (e) {
           console.error(e);
         }
       });
+    }
+  };
+
+  @action
+  quitQueue = () => {
+    if (this.socket?.write) {
+      this.socket.write(
+        JSON.stringify({
+          message: 'changeQueue',
+          body: {patientCpf: this.connectedCpf, nextQueue: 'finished'},
+        }),
+        'utf8',
+        e => {
+          if (e) {
+            console.error(e);
+          }
+        },
+      );
+    }
+  };
+  @action
+  enterQueue = (patientObject: PatientType) => {
+    this.connectedCpf = patientObject.cpf;
+    if (this.socket?.write) {
+      this.socket.write(
+        JSON.stringify({
+          message: 'enterQueue',
+          body: {
+            patientName: patientObject.name,
+            patientCpf: patientObject.cpf,
+          },
+        }),
+        'utf8',
+        e => {
+          if (e) {
+            console.error(e);
+          }
+        },
+      );
     }
   };
 }
