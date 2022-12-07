@@ -15,6 +15,7 @@ const styles = StyleSheet.create({
     transform: [{rotate: '180deg'}],
   },
   text: {
+    fontWeight: 'bold',
     fontSize: 30,
     marginEnd: 10,
   },
@@ -24,12 +25,6 @@ class Header extends Component {
   render() {
     return (
       <StyledHeader>
-        <TouchableOpacity>
-          <Image
-            style={styles.backButton}
-            source={require('../../assets/arrow.png')}
-          />
-        </TouchableOpacity>
         <Text style={styles.text}>Hospitais</Text>
       </StyledHeader>
     );

@@ -3,6 +3,7 @@ import React from 'react';
 import Toast from 'react-native-toast-message';
 import {inject, observer} from 'mobx-react';
 import {RootStore} from '../../stores/RootStore';
+import {cpfMask} from '../../utils/cpfCode';
 
 interface IProps {
   setModalVisible: (modal: boolean) => void;
@@ -37,14 +38,14 @@ export class QueueEnter extends React.Component<IProps, IState> {
 
   handleCpfChange = (e: any) => {
     this.setState({
-      cpf: e.nativeEvent.text,
+      cpf: cpfMask(e),
     });
   };
 
   async sendMessage() {
     const patientObject = {
       name: this.state.name,
-      cpf: this.state.cpf,
+      cpf: this.state.cpf.replace(/[^0-9]/g, ''),
     };
     Promise.resolve(this.props.store?.socketStore.connect())
       .then(() => {
@@ -90,9 +91,11 @@ export class QueueEnter extends React.Component<IProps, IState> {
                   CPF
                 </Text>
                 <Input
+                  value={this.state.cpf}
+                  maxLength={14}
                   fontSize={'xl'}
                   placeholder="Ex: 000.000.000-00"
-                  onChange={e => this.handleCpfChange(e)}
+                  onChangeText={e => this.handleCpfChange(e)}
                 />
               </FormControl>
             </Modal.Body>
