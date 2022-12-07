@@ -24,16 +24,18 @@ export class SocketStore {
   @action
   async connect() {
     return new Promise((resolve, rejected) => {
-      console.log('then');
-      console.log('callback');
       this.socket =
         TcpSocket.connect({host: 'localhost', port: 3322}, () => {
-          console.log('connected executed');
           resolve('Connected');
           this.connected = true;
+        }).on('error', () => {
+          Toast.show({
+            position: 'bottom',
+            type: 'error',
+            text1: 'Impossível de conectar!',
+            text2: 'Provavelmente o servidor não está ativo.',
+          });
         }) ?? null;
-      console.log('callback2');
-      console.log(this.socket);
       if (!this.socket) rejected('Error');
     })
       .then(connMess => {
@@ -41,6 +43,7 @@ export class SocketStore {
           this.socket.on('data', data => {
             if (parseMessage(data)) {
               const {message, body} = parseMessage(data);
+              console.log(message, body);
               this.rootStore.queueStore.queueMapper(message, body);
             }
           });
@@ -74,7 +77,11 @@ export class SocketStore {
       this.socket.write(
         JSON.stringify({
           message: 'changeQueue',
-          body: {patientCpf: this.connectedCpf, nextQueue: 'finished'},
+          body: {
+            patientCpf: this.connectedCpf,
+            nextQueue: 'finished',
+            requestedOrigin: 'PATIENT',
+          },
         }),
         'utf8',
         e => {

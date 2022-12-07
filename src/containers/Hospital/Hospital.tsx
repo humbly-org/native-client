@@ -72,7 +72,7 @@ class Hospital extends Component<IProps, IState> {
 
     const {popoverVisible, modal} = this.state;
     const {queueStore, socketStore} = this.props.store!;
-    const {setQuitQueueModal} = queueStore;
+    const {setQuitQueueModal, averageTimeToCallInMinutes} = queueStore;
     const {state} = queueStore;
 
     const modals = {
@@ -228,26 +228,25 @@ class Hospital extends Component<IProps, IState> {
                       display: 'flex',
                     }}>
                     {state !== 'notConnected' ? (
-                      <Badge
-                        style={{
-                          backgroundColor: QueueColors[state],
-                          marginRight: 10,
-                        }}>
-                        <Text bold color={'white'} fontSize={12}>
-                          {QueueStatus[state]}
-                        </Text>
-                      </Badge>
+                      <>
+                        <Badge
+                          style={{
+                            backgroundColor: QueueColors[state],
+                            marginRight: 10,
+                          }}>
+                          <Text bold color={'white'} fontSize={12}>
+                            {QueueStatus[state]}
+                          </Text>
+                        </Badge>
+                        {state === 'onHold' &&
+                        averageTimeToCallInMinutes > 0 ? (
+                          <Text color={'white'} bold>
+                            {'Atendimento em '}
+                            <Badge>{averageTimeToCallInMinutes}</Badge> min
+                          </Text>
+                        ) : null}
+                      </>
                     ) : null}
-                    {state !== 'notConnected' ? null : (
-                      <Text
-                        style={{
-                          color: 'white',
-                          fontSize: 11,
-                          fontWeight: '600',
-                        }}>
-                        Atendimento em XX minutos.
-                      </Text>
-                    )}
                   </Row>
                   <View>
                     <Text

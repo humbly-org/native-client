@@ -48,7 +48,6 @@ export class QueueEnter extends React.Component<IProps, IState> {
     };
     Promise.resolve(this.props.store?.socketStore.connect())
       .then(() => {
-        console.log('resolved');
         this.props.store?.socketStore.enterQueue(patientObject);
       })
       .finally(() => {

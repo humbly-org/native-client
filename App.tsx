@@ -22,7 +22,7 @@ export default class App extends React.Component {
       <View
         style={{
           margin: 4,
-          padding: 6,
+          padding: 10,
           borderRadius: 8,
           width: '90%',
           display: 'flex',
@@ -38,6 +38,7 @@ export default class App extends React.Component {
             justifyContent: 'center',
             alignItems: 'center',
             alignSelf: 'center',
+            marginRight: 6,
           }}
           size={32}
         />
@@ -55,7 +56,7 @@ export default class App extends React.Component {
       <View
         style={{
           margin: 4,
-          padding: 6,
+          padding: 10,
           borderRadius: 8,
           width: '90%',
           display: 'flex',
@@ -71,6 +72,7 @@ export default class App extends React.Component {
             justifyContent: 'center',
             alignItems: 'center',
             alignSelf: 'center',
+            marginRight: 6,
           }}
           size={32}
         />
@@ -88,7 +90,7 @@ export default class App extends React.Component {
       <View
         style={{
           margin: 4,
-          padding: 6,
+          padding: 10,
           borderRadius: 8,
           width: '90%',
           display: 'flex',
@@ -101,6 +103,7 @@ export default class App extends React.Component {
           name={'message-circle'}
           color={'white'}
           style={{
+            marginRight: 6,
             justifyContent: 'center',
             alignItems: 'center',
             alignSelf: 'center',

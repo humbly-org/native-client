@@ -6,6 +6,7 @@ type IMapper = 'enterQueueRes' | 'callPatientRes' | 'changeQueueRes';
 
 export class QueueStore {
   state: 'onHold' | 'inProgress' | 'finished' | 'notConnected';
+  averageTimeToCallInMinutes = 0;
   quitQueueModal = false;
   callPatientModal: boolean;
   code: string = '';
@@ -19,14 +20,20 @@ export class QueueStore {
     this.rootStore = rootStore;
     this.queueMapper = this.queueMapper.bind(this);
 
-    autorun(() => {
-      // console.warn('IN QUEUE:', this.state);
-    });
+    autorun(() => {});
   }
 
   @action
   queueMapper = (message: IMapper, body: any) => {
     const obj = {
+      errorMessage: (body: {message: string}) => {
+        Toast.show({
+          position: 'bottom',
+          type: 'error',
+          text1: 'Erro!',
+          text2: body.message,
+        });
+      },
       enterQueueRes: () => {
         this.enterQueue();
         Toast.show({
@@ -35,6 +42,18 @@ export class QueueStore {
           text1: 'Você entrou na fila!',
           text2: 'Aguarde ser chamado pelo guiche.',
         });
+      },
+      timeToCallUpdated: (body: {averageTimeToCall: number}) => {
+        this.averageTimeToCallInMinutes = body.averageTimeToCall;
+        console.log(this.getState());
+        if (this.getState() === 'onHold') {
+          Toast.show({
+            position: 'bottom',
+            type: 'info',
+            text1: 'Tempo de atendimento!',
+            text2: 'O seu tempo de atendimento foi atualizado.',
+          });
+        }
       },
       callPatientRes: (body: {patientCode: string}) => {
         this.setCallPatientModal(true);
