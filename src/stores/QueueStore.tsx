@@ -27,12 +27,14 @@ export class QueueStore {
   queueMapper = (message: IMapper, body: any) => {
     const obj = {
       errorMessage: (body: {message: string}) => {
-        Toast.show({
-          position: 'bottom',
-          type: 'error',
-          text1: 'Erro!',
-          text2: body.message,
-        });
+        if (body.message === 'java.lang.Exception: Invalid CPF!') {
+          Toast.show({
+            position: 'bottom',
+            type: 'error',
+            text1: 'Erro!',
+            text2: 'CPF inválido!',
+          });
+        }
       },
       enterQueueRes: () => {
         this.enterQueue();
